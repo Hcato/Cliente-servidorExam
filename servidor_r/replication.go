@@ -31,7 +31,6 @@ func getReplicatedProducts(c *gin.Context) {
 			return
 		}
 
-		// Eliminar todas las instancias del producto si es "update" o "delete"
 		var newBdReplication []Product
 		for _, p := range bdReplication {
 			if p.ID != productID {
@@ -40,14 +39,12 @@ func getReplicatedProducts(c *gin.Context) {
 		}
 		bdReplication = newBdReplication
 
-		// Si es "delete", no volvemos a agregar el producto
 		if accion == "delete" {
 			fmt.Println("Product deleted from replication:", productID)
 			c.JSON(http.StatusOK, gin.H{"message": "Product deleted from replication", "id": productID})
 			return
 		}
 
-		// Agregar el nuevo producto actualizado si es "update" o "create"
 		newProduct := Product{ID: productID, Name: name, Amount: amount, CodeBar: codebar}
 		bdReplication = append(bdReplication, newProduct)
 		fmt.Println("Product replicated:", newProduct)
